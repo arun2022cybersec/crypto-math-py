@@ -1,131 +1,121 @@
-class Set:
-    def __init__(self, elements=None):
-        if elements is None:
-            self.elements = set()
-        else:
-            self.elements = set(elements)
-    
-    def __repr__(self):
-        return f'{self.__class__.__name__}({self.elements})'
-    
-    def __str__(self):
-        return '{' + ', '.join(map(str, self.elements)) + '}'
-    
-    def add(self, element):
-        self.elements.add(element)
-    
-    def remove(self, element):
-        if element in self.elements:
-            self.elements.remove(element)
-        else:
-            raise ValueError("Element not found in the set")
-    
-    def union(self, other):
-        if isinstance(other, Set):
-            return Set(self.elements | other.elements)
-        else:
-            raise TypeError("Argument must be of type Set")
-    
-    def intersection(self, other):
-        if isinstance(other, Set):
-            return Set(self.elements & other.elements)
-        else:
-            raise TypeError("Argument must be of type Set")
-    
-    def difference(self, other):
-        if isinstance(other, Set):
-            return Set(self.elements - other.elements)
-        else:
-            raise TypeError("Argument must be of type Set")
-    
-    def is_subset(self, other):
-        if isinstance(other, Set):
-            return self.elements <= other.elements
-        else:
-            raise TypeError("Argument must be of type Set")
-    
-    def is_proper_subset(self, other):
-        if isinstance(other, Set):
-            return self.elements < other.elements
-        else:
-            raise TypeError("Argument must be of type Set")
+from typing import Set as SetType
 
-    def is_equal(self, other):
+class Set:
+    """Represents a mathematical set."""
+    
+    def __init__(self, elements):
+        """Initialize the set with unique elements.
+
+        Args:
+            elements (Set): A set of unique elements.
+        """
+        self.elements = set(elements)
+
+    def __eq__(self, other):
         if isinstance(other, Set):
             return self.elements == other.elements
-        else:
-            raise TypeError("Argument must be of type Set")
+        return False
 
-    def complement(self, universal_set):
-        if isinstance(universal_set, Set):
-            return Set(universal_set.elements - self.elements)
-        else:
-            raise TypeError("Argument must be of type Set")
+    def add(self, element):
+        """Add an element to the set."""
+        self.elements.add(element)
 
-    def power_set(self):
-        from itertools import chain, combinations
-        s = list(self.elements)
-        power_set_elements = list(chain.from_iterable(combinations(s, r) for r in range(len(s)+1)))
-        return Set([frozenset(e) for e in power_set_elements])
+    def remove(self, element):
+        """Remove an element from the set."""
+        self.elements.discard(element)
 
-class FiniteSet(Set):
-    pass
+    def union(self, other: 'Set') -> 'Set':
+        """Return the union of two sets.
 
-class InfiniteSet(Set):
-    def __init__(self, generator):
-        self.generator = generator
+        Args:
+            other (Set): Another set to union with.
+
+        Returns:
+            Set: A new set containing the union of both sets.
+        """
+        return Set(self.elements | other.elements)
+
+    def intersection(self, other: 'Set') -> 'Set':
+        """Return the intersection of two sets.
+
+        Args:
+            other (Set): Another set to intersect with.
+
+        Returns:
+            Set: A new set containing the intersection of both sets.
+        """
+        return Set(self.elements & other.elements)
+
+    def difference(self, other: 'Set') -> 'Set':
+        """Return the difference of two sets.
+
+        Args:
+            other (Set): Another set to subtract.
+
+        Returns:
+            Set: A new set containing elements in this set but not in the other.
+        """
+        return Set(self.elements - other.elements)
+
+    def symmetric_difference(self, other: 'Set') -> 'Set':
+        """Return the symmetric difference of two sets.
+
+        Args:
+            other (Set): Another set to compare.
+
+        Returns:
+            Set: A new set containing elements in either set but not in both.
+        """
+        return Set(self.elements ^ other.elements)
+
+    def complement(self, universe: 'Set') -> 'Set':
+        """Return the complement of the set with respect to a universe.
+
+        Args:
+            universe (Set): The universal set.
+
+        Returns:
+            Set: A new set containing elements in the universe but not in this set.
+        """
+        return Set(universe.elements - self.elements)
+
+    def is_subset(self, other: 'Set') -> bool:
+        """Check if this set is a subset of another set.
+
+        Args:
+            other (Set): Another set to compare.
+
+        Returns:
+            bool: True if this set is a subset of the other, False otherwise.
+        """
+        return self.elements.issubset(other.elements)
+
+    def is_superset(self, other: 'Set') -> bool:
+        """Check if this set is a superset of another set.
+
+        Args:
+            other (Set): Another set to compare.
+
+        Returns:
+            bool: True if this set is a superset of the other, False otherwise.
+        """
+        return self.elements.issuperset(other.elements)
+
+    def power_set(self) -> 'Set':
+        """Return the power set of the set.
+
+        Returns:
+            Set: A new set containing all subsets of this set.
+        """
+        power_set = set()
+        elements_list = list(self.elements)
+        n = len(elements_list)
+
+        for i in range(1 << n):  # 2^n combinations
+            subset = {elements_list[j] for j in range(n) if (i & (1 << j))}
+            power_set.add(frozenset(subset))  # Use frozenset to make it hashable
+
+        return Set(power_set)
 
     def __repr__(self):
-        return f'{self.__class__.__name__}(generator={self.generator})'
-
-    def __str__(self):
-        return f'{self.__class__.__name__}(generator={self.generator})'
-
-    def generate_elements(self, n):
-        return Set([next(self.generator) for _ in range(n)])
-
-class EmptySet(Set):
-    def __init__(self):
-        super().__init__(set())
-
-class UniversalSet(Set):
-    def __init__(self, elements):
-        super().__init__(elements)
-
-class Symbol:
-    def __init__(self, symbol, description):
-        self.symbol = symbol
-        self.description = description
-
-    def __str__(self):
-        return f'{self.symbol} ({self.description})'
-
-class Symbols:
-    UNION = Symbol('∪', 'Union')
-    INTERSECTION = Symbol('∩', 'Intersection')
-    DIFFERENCE = Symbol('-', 'Difference')
-    COMPLEMENT = Symbol("'", 'Complement')
-    EMPTY_SET = Symbol('∅', 'Empty Set')
-    SUBSET = Symbol('⊆', 'Subset')
-    PROPER_SUBSET = Symbol('⊂', 'Proper Subset')
-    POWER_SET = Symbol('P', 'Power Set')
-    EQUALS = Symbol('=', 'Equals')
-
-# Example Usage
-A = FiniteSet([1, 2, 3])
-B = FiniteSet([2, 3, 4])
-
-print(f"A = {A}")
-print(f"B = {B}")
-print(f"A {Symbols.UNION} B = {A.union(B)}")
-print(f"A {Symbols.INTERSECTION} B = {A.intersection(B)}")
-print(f"A {Symbols.DIFFERENCE} B = {A.difference(B)}")
-print(f"A {Symbols.SUBSET} B = {A.is_subset(B)}")
-print(f"A {Symbols.PROPER_SUBSET} B = {A.is_proper_subset(B)}")
-print(f"A {Symbols.EQUALS} B = {A.is_equal(B)}")
-
-U = UniversalSet(range(1, 5))
-print(f"A {Symbols.COMPLEMENT} U = {A.complement(U)}")
-
-P_A = A.power_set()
-print(f"{Symbols.POWER_SET}A = {P_A}")
+        return f"Set({self.elements})"
