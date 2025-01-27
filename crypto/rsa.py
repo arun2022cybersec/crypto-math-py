@@ -1,5 +1,5 @@
 import random
-from sympy import isprime, mod_inverse
+from crypto.number_theory import is_prime, mod_inverse
 
 class RSA:
     """Represents the RSA (Rivest-Shamir-Adleman) algorithm."""
@@ -37,7 +37,7 @@ class RSA:
         """
         while True:
             prime_candidate = random.getrandbits(self.key_size // 2)
-            if isprime(prime_candidate):
+            if is_prime(prime_candidate):
                 return prime_candidate
 
     def choose_e(self, phi):
@@ -53,7 +53,7 @@ class RSA:
         e = 65537  # Commonly used prime number for e
         if phi % e == 0:
             for i in range(3, phi, 2):
-                if phi % i != 0 and isprime(i):
+                if phi % i != 0 and is_prime(i):
                     return i
         return e
 

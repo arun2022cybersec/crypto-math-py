@@ -1,3 +1,5 @@
+from crypto.des_impl import DESImpl
+
 class DES:
     """Represents the DES (Data Encryption Standard) algorithm."""
 
@@ -6,11 +8,11 @@ class DES:
         self.key_size = 8  # DES key size is 8 bytes (64 bits)
         self.block_size = 8  # DES block size is 8 bytes (64 bits)
         self.num_rounds = 16  # DES uses 16 rounds of processing
+        self.impl = DESImpl()
 
     def generate_key(self):
         """Generate a random key for DES encryption."""
-        import os
-        return os.urandom(self.key_size)
+        return self.impl.generate_key(self.key_size)
 
     def encrypt(self, plaintext, key):
         """
@@ -23,13 +25,7 @@ class DES:
         Returns:
             bytes: The encrypted ciphertext.
         """
-        from Crypto.Cipher import DES
-        from Crypto.Util.Padding import pad
-
-        cipher = DES.new(key, DES.MODE_ECB)
-        padded_plaintext = pad(plaintext.encode(), self.block_size)
-        ciphertext = cipher.encrypt(padded_plaintext)
-        return ciphertext
+        return self.impl.encrypt(plaintext, key, self.block_size)
 
     def decrypt(self, ciphertext, key):
         """
@@ -42,10 +38,4 @@ class DES:
         Returns:
             str: The decrypted plaintext.
         """
-        from Crypto.Cipher import DES
-        from Crypto.Util.Padding import unpad
-
-        cipher = DES.new(key, DES.MODE_ECB)
-        decrypted_padded_plaintext = cipher.decrypt(ciphertext)
-        plaintext = unpad(decrypted_padded_plaintext, self.block_size).decode()
-        return plaintext
+        return self.impl.decrypt(ciphertext, key, self.block_size)

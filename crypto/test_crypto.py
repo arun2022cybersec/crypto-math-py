@@ -4,7 +4,7 @@ from crypto.decryption import Decryption
 from group_theory.galois_field import GaloisField
 from crypto.des import DES
 from crypto.rsa import RSA
-from crypto.triple_des import TripleDES
+from crypto.3des import TripleDES
 from crypto.blowfish import Blowfish
 from crypto.twofish import Twofish
 from crypto.ecc import ECC

@@ -1,6 +1,7 @@
 from group_theory.galois_field import GaloisField
 from crypto.aes import AES
 import hmac
+from crypto.pbkdf2 import pbkdf2_hmac
 
 class Decryption:
     """Represents decryption algorithms using Galois fields."""
@@ -26,14 +27,7 @@ class Decryption:
         Returns:
             bytes: The generated key.
         """
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,
-            backend=default_backend()
-        )
-        return kdf.derive(password)
+        return pbkdf2_hmac('sha256', password, salt, 100000, 32)
 
     def decrypt(self, ciphertext: bytes, key: bytes, mac: bytes) -> str:
         """
@@ -60,7 +54,7 @@ class Decryption:
             raise ValueError("Invalid key length. Key must be 32 bytes long.")
         
         # Verify the integrity of the ciphertext using MAC
-        computed_mac = hmac.new(key, ciphertext, hashes.SHA256()).digest()
+        computed_mac = hmac.new(key, ciphertext, 'sha256').digest()
         if not hmac.compare_digest(computed_mac, mac):
             raise ValueError("MAC verification failed. The ciphertext may have been tampered with.")
         
