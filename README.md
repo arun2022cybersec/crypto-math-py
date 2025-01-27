@@ -5,7 +5,7 @@ CryptoMathPy is a Python project that explores the intersection of cryptography,
 ## Features
 
 - **Mathematical Foundations**: Implement mathematical concepts of sets, relations, functions, group theory, rings, fields, and Galois fields in Python.
-- **Encryption Algorithms**: Develop encryption algorithms including AES, RSA, and others.
+- **Encryption Algorithms**: Develop encryption algorithms including AES, RSA, DES, 3DES, Blowfish, Twofish, and others.
 - **Decryption Algorithms**: Implement corresponding decryption algorithms for encrypted data.
 - **Python Applications**: Create Python applications for encryption, decryption, and data security.
 - **Documentation and Examples**: Provide comprehensive documentation and usage examples for each implemented concept and algorithm.
@@ -121,16 +121,197 @@ encryption = Encryption(galois_field)
 decryption = Decryption(galois_field)
 
 # Generate a key
-key = encryption.generate_key()
+password = b"my_password"
+salt = b"my_salt"
+key = encryption.generate_key(password, salt)
 
 # Encrypt and decrypt a message
 plaintext = "hello"
-ciphertext = encryption.encrypt(plaintext, key)
-decrypted_text = decryption.decrypt(ciphertext, key)
+ciphertext, mac = encryption.encrypt(plaintext, key)
+decrypted_text = decryption.decrypt(ciphertext, key, mac)
 
 print(f"Plaintext: {plaintext}")
 print(f"Ciphertext: {ciphertext}")
 print(f"Decrypted Text: {decrypted_text}")
+```
+
+### DES Algorithm
+
+The `DES` class represents the Data Encryption Standard algorithm with encryption and decryption methods.
+
+```python
+from crypto.des import DES
+
+# Initialize DES
+des = DES()
+
+# Generate a key
+key = des.generate_key()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = des.encrypt(plaintext, key)
+decrypted_text = des.decrypt(ciphertext, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### RSA Algorithm
+
+The `RSA` class represents the Rivest-Shamir-Adleman algorithm with key generation, encryption, and decryption methods.
+
+```python
+from crypto.rsa import RSA
+
+# Initialize RSA
+rsa = RSA()
+
+# Generate keys
+private_key, public_key = rsa.generate_keys()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = rsa.encrypt(plaintext, public_key)
+decrypted_text = rsa.decrypt(ciphertext, private_key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### 3DES Algorithm
+
+The `TripleDES` class represents the Triple Data Encryption Standard algorithm with encryption and decryption methods.
+
+```python
+from crypto.triple_des import TripleDES
+
+# Initialize 3DES
+triple_des = TripleDES()
+
+# Generate a key
+key = triple_des.generate_key()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = triple_des.encrypt(plaintext, key)
+decrypted_text = triple_des.decrypt(ciphertext, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### Blowfish Algorithm
+
+The `Blowfish` class represents the Blowfish algorithm with encryption and decryption methods.
+
+```python
+from crypto.blowfish import Blowfish
+
+# Initialize Blowfish
+blowfish = Blowfish()
+
+# Generate a key
+key = blowfish.generate_key()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = blowfish.encrypt(plaintext, key)
+decrypted_text = blowfish.decrypt(ciphertext, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### Twofish Algorithm
+
+The `Twofish` class represents the Twofish algorithm with encryption and decryption methods.
+
+```python
+from crypto.twofish import Twofish
+
+# Initialize Twofish
+twofish = Twofish()
+
+# Generate a key
+key = twofish.generate_key()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = twofish.encrypt(plaintext, key)
+decrypted_text = twofish.decrypt(ciphertext, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### ECC Algorithm
+
+The `ECC` class represents the Elliptic Curve Cryptography algorithm with key generation, encryption, and decryption methods.
+
+```python
+from crypto.ecc import ECC
+
+# Initialize ECC
+ecc = ECC()
+
+# Generate keys
+private_key, public_key = ecc.generate_keys()
+
+# Encrypt and decrypt a message
+plaintext = "hello"
+ciphertext = ecc.encrypt(plaintext, public_key)
+decrypted_text = ecc.decrypt(ciphertext, private_key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
+```
+
+### DSA Algorithm
+
+The `DSA` class represents the Digital Signature Algorithm with key generation, signing, and verification methods.
+
+```python
+from crypto.dsa import DSA
+
+# Initialize DSA
+dsa = DSA()
+
+# Generate keys
+private_key, public_key = dsa.generate_keys()
+
+# Sign and verify a message
+message = "hello"
+signature = dsa.sign(message, private_key)
+is_valid = dsa.verify(message, signature, public_key)
+
+print(f"Message: {message}")
+print(f"Signature: {signature}")
+print(f"Is Valid: {is_valid}")
+```
+
+### SHA-256 Algorithm
+
+The `SHA256` class represents the Secure Hash Algorithm 256-bit with methods for hashing data.
+
+```python
+from crypto.sha256 import SHA256
+
+# Initialize SHA-256
+sha256 = SHA256()
+
+# Hash a message
+message = "hello"
+hash_value = sha256.hash(message)
+
+print(f"Message: {message}")
+print(f"Hash Value: {hash_value}")
 ```
 
 ## Security Practices and Guidelines
