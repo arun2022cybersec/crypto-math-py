@@ -1,4 +1,5 @@
 from group_theory.galois_field import GaloisField
+from crypto.aes import AES
 
 class Encryption:
     """Represents encryption algorithms using Galois fields."""
@@ -11,6 +12,7 @@ class Encryption:
             galois_field (GaloisField): The Galois field for cryptographic operations.
         """
         self.galois_field = galois_field
+        self.aes = AES(galois_field.elements, galois_field.addition, galois_field.multiplication)
 
     def generate_key(self):
         """
@@ -33,19 +35,4 @@ class Encryption:
         Returns:
             str: The encrypted ciphertext.
         """
-        # Placeholder for encryption logic
-        return "ciphertext"
-
-    def decrypt(self, ciphertext: str, key: str) -> str:
-        """
-        Decrypt the ciphertext using the provided key.
-
-        Args:
-            ciphertext (str): The ciphertext to decrypt.
-            key (str): The decryption key.
-
-        Returns:
-            str: The decrypted plaintext.
-        """
-        # Placeholder for decryption logic
-        return "plaintext"
+        return self.aes.encrypt(plaintext, key)
