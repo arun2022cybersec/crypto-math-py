@@ -133,6 +133,33 @@ print(f"Ciphertext: {ciphertext}")
 print(f"Decrypted Text: {decrypted_text}")
 ```
 
+## Security Practices and Guidelines
+
+### Secure Key Generation
+
+- Use a secure random number generator for key generation to ensure the keys are unpredictable.
+- Avoid using hardcoded keys or weak key generation methods.
+
+### Input Validation and Error Handling
+
+- Validate all inputs to encryption and decryption methods to prevent invalid data from causing errors or vulnerabilities.
+- Implement proper error handling to manage exceptions and errors gracefully.
+
+### Secure Key Storage and Management
+
+- Store keys securely and avoid exposing them in plaintext.
+- Use secure key management practices to protect keys from unauthorized access.
+
+### Secure Data Handling
+
+- Securely handle and erase sensitive data like keys and plaintext from memory to prevent data leakage.
+- Use secure coding practices to protect sensitive data throughout the encryption and decryption processes.
+
+### Testing and Validation
+
+- Test encryption and decryption methods for edge cases and invalid inputs to ensure robustness and security.
+- Regularly review and update the code to address potential security vulnerabilities.
+
 ## Contributing
 
 Contributions to CryptoMathPy are welcome! If you'd like to contribute to the project, please follow these steps:

@@ -1,5 +1,6 @@
 from group_theory.galois_field import GaloisField
 from crypto.aes import AES
+import os
 
 class Encryption:
     """Represents encryption algorithms using Galois fields."""
@@ -16,23 +17,31 @@ class Encryption:
 
     def generate_key(self):
         """
-        Generate a key for encryption.
+        Generate a secure key for encryption.
 
         Returns:
-            The generated key.
+            bytes: The generated key.
         """
-        # Placeholder for key generation logic
-        return "key"
+        return os.urandom(16)  # Generate a 128-bit key
 
-    def encrypt(self, plaintext: str, key: str) -> str:
+    def encrypt(self, plaintext: str, key: bytes) -> bytes:
         """
         Encrypt the plaintext using the provided key.
 
         Args:
             plaintext (str): The plaintext to encrypt.
-            key (str): The encryption key.
+            key (bytes): The encryption key.
 
         Returns:
-            str: The encrypted ciphertext.
+            bytes: The encrypted ciphertext.
         """
-        return self.aes.encrypt(plaintext, key)
+        if not isinstance(plaintext, str) or not isinstance(key, bytes):
+            raise ValueError("Invalid input types for plaintext or key.")
+        
+        plaintext_bytes = plaintext.encode('utf-8')
+        ciphertext = self.aes.encrypt(plaintext_bytes, key)
+        
+        # Securely erase plaintext bytes from memory
+        del plaintext_bytes
+        
+        return bytes(ciphertext)
