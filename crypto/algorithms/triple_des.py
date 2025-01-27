@@ -1,17 +1,16 @@
-from group_theory.galois_field import GaloisField
+from crypto.3des_impl import TripleDESImpl
 
-class DES:
-    """Represents the DES (Data Encryption Standard) algorithm."""
+class TripleDES:
+    """Represents the Triple DES (3DES) algorithm."""
 
     def __init__(self):
-        """Initialize the DES algorithm with predefined parameters."""
-        self.key_size = 8  # DES key size is 8 bytes (64 bits)
-        self.block_size = 8  # DES block size is 8 bytes (64 bits)
-        self.num_rounds = 16  # DES uses 16 rounds of processing
-        self.impl = DESImpl()
+        """Initialize the Triple DES algorithm with predefined parameters."""
+        self.key_size = 24  # 3DES key size is 24 bytes (192 bits)
+        self.block_size = 8  # 3DES block size is 8 bytes (64 bits)
+        self.impl = TripleDESImpl()
 
     def generate_key(self):
-        """Generate a random key for DES encryption."""
+        """Generate a random key for 3DES encryption."""
         return self.impl.generate_key(self.key_size)
 
     def encrypt(self, plaintext, key):

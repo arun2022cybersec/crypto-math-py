@@ -1,5 +1,6 @@
 import random
 from crypto.number_theory import is_prime, mod_inverse
+from group_theory.galois_field import GaloisField
 
 class RSA:
     """Represents the RSA (Rivest-Shamir-Adleman) algorithm."""
