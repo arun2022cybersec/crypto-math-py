@@ -1,5 +1,5 @@
 import unittest
-from sets import Set
+from sets.sets import Set
 
 class TestSet(unittest.TestCase):
     def setUp(self):

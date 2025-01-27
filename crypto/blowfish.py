@@ -1,4 +1,5 @@
 from group_theory.galois_field import GaloisField
+import os
 
 class Blowfish(GaloisField):
     """Represents the Blowfish encryption algorithm using Galois fields."""
@@ -127,3 +128,12 @@ class Blowfish(GaloisField):
             plaintext.extend(L.to_bytes(4, 'big'))
             plaintext.extend(R.to_bytes(4, 'big'))
         return bytes(plaintext)
+
+    def generate_key(self):
+        """
+        Generate a random key for Blowfish encryption.
+
+        Returns:
+            bytes: The generated key.
+        """
+        return os.urandom(16)

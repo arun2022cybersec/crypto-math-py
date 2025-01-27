@@ -157,7 +157,7 @@ class AES(GaloisField):
             return [[self.inv_s_box[b] for b in row] for row in state]
 
         def inv_shift_rows(state):
-            return [state[0], state[1][-1:] + state[1][:-1], state[2][-2:] + state[2][:-2], state[3][-3:] + state[3][-3]]
+            return [state[0], state[1][-1:] + state[1][:-1], state[2][-2:] + state[2][-2], state[3][-3:] + state[3][-3]]
 
         def inv_mix_columns(state):
             def inv_mix_single_column(column):

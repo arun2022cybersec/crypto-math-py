@@ -1,4 +1,5 @@
 from group_theory.galois_field import GaloisField
+import os
 
 class Twofish(GaloisField):
     """Represents the Twofish encryption algorithm using Galois fields."""
@@ -56,3 +57,12 @@ class Twofish(GaloisField):
         """
         # Decryption logic
         pass
+
+    def generate_key(self):
+        """
+        Generate a random key for Twofish encryption.
+
+        Returns:
+            bytes: The generated key.
+        """
+        return os.urandom(self.key_size)
