@@ -1,27 +1,43 @@
-from typing import Set as SetType
+from typing import Set as SetType, Any, FrozenSet
 
 class Set:
     """Represents a mathematical set."""
     
-    def __init__(self, elements):
+    def __init__(self, elements: SetType[Any]):
         """Initialize the set with unique elements.
 
         Args:
-            elements (Set): A set of unique elements.
+            elements (SetType[Any]): A set of unique elements.
         """
         self.elements = set(elements)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
+        """Check if two sets are equal.
+
+        Args:
+            other (Any): Another set to compare.
+
+        Returns:
+            bool: True if the sets are equal, False otherwise.
+        """
         if isinstance(other, Set):
             return self.elements == other.elements
         return False
 
-    def add(self, element):
-        """Add an element to the set."""
+    def add(self, element: Any) -> None:
+        """Add an element to the set.
+
+        Args:
+            element (Any): The element to add.
+        """
         self.elements.add(element)
 
-    def remove(self, element):
-        """Remove an element from the set."""
+    def remove(self, element: Any) -> None:
+        """Remove an element from the set.
+
+        Args:
+            element (Any): The element to remove.
+        """
         self.elements.discard(element)
 
     def union(self, other: 'Set') -> 'Set':
@@ -117,5 +133,10 @@ class Set:
 
         return Set(power_set)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Return a string representation of the set.
+
+        Returns:
+            str: A string representation of the set.
+        """
         return f"Set({self.elements})"
