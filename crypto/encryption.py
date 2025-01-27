@@ -1,7 +1,7 @@
 from group_theory.galois_field import GaloisField
 from crypto.aes import AES
-from cryptography.hazmat.backends import default_backend
 import hmac
+from crypto.pbkdf2 import pbkdf2_hmac
 
 class Encryption:
     """Represents encryption algorithms using Galois fields."""
@@ -27,14 +27,7 @@ class Encryption:
         Returns:
             bytes: The generated key.
         """
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,
-            backend=default_backend()
-        )
-        return kdf.derive(password)
+        return pbkdf2_hmac('sha256', password, salt, 100000, 32)
 
     def encrypt(self, plaintext: str, key: bytes) -> (bytes, bytes):
         """
@@ -59,7 +52,7 @@ class Encryption:
         ciphertext = bytes(self.aes.encrypt(list(plaintext_bytes), list(key)))
         
         # Generate MAC for integrity check
-        mac = hmac.new(key, ciphertext, hashes.SHA256()).digest()
+        mac = hmac.new(key, ciphertext, 'sha256').digest()
         
         # Securely erase plaintext bytes from memory
         del plaintext_bytes

@@ -1,6 +1,4 @@
-from Crypto.Cipher import DES3
-from Crypto.Random import get_random_bytes
-from Crypto.Util.Padding import pad, unpad
+from crypto.3des_impl import TripleDESImpl
 
 class TripleDES:
     """Represents the Triple DES (3DES) algorithm."""
@@ -9,10 +7,11 @@ class TripleDES:
         """Initialize the Triple DES algorithm with predefined parameters."""
         self.key_size = 24  # 3DES key size is 24 bytes (192 bits)
         self.block_size = 8  # 3DES block size is 8 bytes (64 bits)
+        self.impl = TripleDESImpl()
 
     def generate_key(self):
         """Generate a random key for 3DES encryption."""
-        return get_random_bytes(self.key_size)
+        return self.impl.generate_key(self.key_size)
 
     def encrypt(self, plaintext, key):
         """
@@ -25,10 +24,7 @@ class TripleDES:
         Returns:
             bytes: The encrypted ciphertext.
         """
-        cipher = DES3.new(key, DES3.MODE_ECB)
-        padded_plaintext = pad(plaintext.encode(), self.block_size)
-        ciphertext = cipher.encrypt(padded_plaintext)
-        return ciphertext
+        return self.impl.encrypt(plaintext, key, self.block_size)
 
     def decrypt(self, ciphertext, key):
         """
@@ -41,7 +37,4 @@ class TripleDES:
         Returns:
             str: The decrypted plaintext.
         """
-        cipher = DES3.new(key, DES3.MODE_ECB)
-        decrypted_padded_plaintext = cipher.decrypt(ciphertext)
-        plaintext = unpad(decrypted_padded_plaintext, self.block_size).decode()
-        return plaintext
+        return self.impl.decrypt(ciphertext, key, self.block_size)
