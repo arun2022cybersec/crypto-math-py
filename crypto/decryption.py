@@ -1,6 +1,6 @@
 from group_theory.galois_field import GaloisField
 from crypto.aes import AES
-import os
+import hmac
 
 class Decryption:
     """Represents decryption algorithms using Galois fields."""
@@ -15,28 +15,54 @@ class Decryption:
         self.galois_field = galois_field
         self.aes = AES(galois_field.elements, galois_field.addition, galois_field.multiplication)
 
-    def generate_key(self):
+    def generate_key(self, password: bytes, salt: bytes) -> bytes:
         """
-        Generate a secure key for decryption.
+        Generate a secure key for decryption using PBKDF2.
+
+        Args:
+            password (bytes): The password to derive the key from.
+            salt (bytes): The salt to use in the key derivation.
 
         Returns:
             bytes: The generated key.
         """
-        return os.urandom(16)  # Generate a 128-bit key
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=100000,
+            backend=default_backend()
+        )
+        return kdf.derive(password)
 
-    def decrypt(self, ciphertext: bytes, key: bytes) -> str:
+    def decrypt(self, ciphertext: bytes, key: bytes, mac: bytes) -> str:
         """
-        Decrypt the ciphertext using the provided key.
+        Decrypt the ciphertext using the provided key and verify the integrity using MAC.
 
         Args:
             ciphertext (bytes): The ciphertext to decrypt.
             key (bytes): The decryption key.
+            mac (bytes): The message authentication code for integrity check.
 
         Returns:
             str: The decrypted plaintext.
+
+        Raises:
+            ValueError: If the input types are invalid or the MAC verification fails.
         """
-        if not isinstance(ciphertext, bytes) or not isinstance(key, bytes):
-            raise ValueError("Invalid input types for ciphertext or key.")
+        if not isinstance(ciphertext, bytes):
+            raise ValueError("Invalid input type for ciphertext. Expected bytes.")
+        if not isinstance(key, bytes):
+            raise ValueError("Invalid input type for key. Expected bytes.")
+        if not isinstance(mac, bytes):
+            raise ValueError("Invalid input type for mac. Expected bytes.")
+        if len(key) != 32:
+            raise ValueError("Invalid key length. Key must be 32 bytes long.")
+        
+        # Verify the integrity of the ciphertext using MAC
+        computed_mac = hmac.new(key, ciphertext, hashes.SHA256()).digest()
+        if not hmac.compare_digest(computed_mac, mac):
+            raise ValueError("MAC verification failed. The ciphertext may have been tampered with.")
         
         plaintext_bytes = self.aes.decrypt(list(ciphertext), list(key))
         plaintext = bytes(plaintext_bytes).decode('utf-8')

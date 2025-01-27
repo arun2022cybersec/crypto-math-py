@@ -1,6 +1,7 @@
 from group_theory.galois_field import GaloisField
 from crypto.aes import AES
-import os
+from cryptography.hazmat.backends import default_backend
+import hmac
 
 class Encryption:
     """Represents encryption algorithms using Galois fields."""
@@ -15,33 +16,52 @@ class Encryption:
         self.galois_field = galois_field
         self.aes = AES(galois_field.elements, galois_field.addition, galois_field.multiplication)
 
-    def generate_key(self):
+    def generate_key(self, password: bytes, salt: bytes) -> bytes:
         """
-        Generate a secure key for encryption.
+        Generate a secure key for encryption using PBKDF2.
+
+        Args:
+            password (bytes): The password to derive the key from.
+            salt (bytes): The salt to use in the key derivation.
 
         Returns:
             bytes: The generated key.
         """
-        return os.urandom(16)  # Generate a 128-bit key
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=100000,
+            backend=default_backend()
+        )
+        return kdf.derive(password)
 
-    def encrypt(self, plaintext: str, key: bytes) -> bytes:
+    def encrypt(self, plaintext: str, key: bytes) -> (bytes, bytes):
         """
-        Encrypt the plaintext using the provided key.
+        Encrypt the plaintext using the provided key and generate a MAC for integrity check.
 
         Args:
             plaintext (str): The plaintext to encrypt.
             key (bytes): The encryption key.
 
         Returns:
-            bytes: The encrypted ciphertext.
+            tuple: The encrypted ciphertext and the message authentication code (MAC).
+
+        Raises:
+            ValueError: If the input types are invalid or the key length is incorrect.
         """
         if not isinstance(plaintext, str) or not isinstance(key, bytes):
             raise ValueError("Invalid input types for plaintext or key.")
+        if len(key) != 32:
+            raise ValueError("Invalid key length. Key must be 32 bytes long.")
         
         plaintext_bytes = plaintext.encode('utf-8')
-        ciphertext = self.aes.encrypt(plaintext_bytes, key)
+        ciphertext = bytes(self.aes.encrypt(list(plaintext_bytes), list(key)))
+        
+        # Generate MAC for integrity check
+        mac = hmac.new(key, ciphertext, hashes.SHA256()).digest()
         
         # Securely erase plaintext bytes from memory
         del plaintext_bytes
         
-        return bytes(ciphertext)
+        return ciphertext, mac
