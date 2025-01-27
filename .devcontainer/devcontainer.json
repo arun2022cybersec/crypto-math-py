@@ -1,7 +1,5 @@
 {
   "tasks": {
-    "test": "pytest",
-    "build": "pip install -r requirements.txt",
-    "launch": "python group_theory/ring_theory.py"
+    "test": "pytest"
   }
 }

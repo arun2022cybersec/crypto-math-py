@@ -4,7 +4,7 @@ from crypto.decryption import Decryption
 from group_theory.galois_field import GaloisField
 from crypto.des import DES
 from crypto.rsa import RSA
-from crypto.3des import TripleDES
+from crypto.triple_des import TripleDES
 from crypto.blowfish import Blowfish
 from crypto.twofish import Twofish
 from crypto.ecc import ECC
@@ -29,16 +29,20 @@ class TestCrypto(unittest.TestCase):
         self.sha256 = SHA256()
 
     def test_key_generation(self):
-        encryption_key = self.encryption.generate_key()
-        decryption_key = self.decryption.generate_key()
+        password = b"password"
+        salt = b"salt"
+        encryption_key = self.encryption.generate_key(password, salt)
+        decryption_key = self.decryption.generate_key(password, salt)
         self.assertIsNotNone(encryption_key)
         self.assertIsNotNone(decryption_key)
 
     def test_encryption_decryption(self):
         plaintext = "hello"
-        key = self.encryption.generate_key()
-        ciphertext = self.encryption.encrypt(plaintext, key)
-        decrypted_text = self.decryption.decrypt(ciphertext, key)
+        password = b"password"
+        salt = b"salt"
+        key = self.encryption.generate_key(password, salt)
+        ciphertext, mac = self.encryption.encrypt(plaintext, key)
+        decrypted_text = self.decryption.decrypt(ciphertext, key, mac)
         self.assertEqual(plaintext, decrypted_text)
 
         # Test edge cases and invalid inputs
@@ -47,9 +51,9 @@ class TestCrypto(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.encryption.encrypt(plaintext, "invalid_key")  # Invalid key type
         with self.assertRaises(ValueError):
-            self.decryption.decrypt(ciphertext, "invalid_key")  # Invalid key type
+            self.decryption.decrypt(ciphertext, "invalid_key", mac)  # Invalid key type
         with self.assertRaises(ValueError):
-            self.decryption.decrypt("invalid_ciphertext", key)  # Invalid ciphertext type
+            self.decryption.decrypt("invalid_ciphertext", key, mac)  # Invalid ciphertext type
 
     def test_aes_key_expansion(self):
         key = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0xcf, 0x9f, 0x24, 0x30, 0xc0, 0x8d]
