@@ -25,6 +25,16 @@ class TestCrypto(unittest.TestCase):
         decrypted_text = self.decryption.decrypt(ciphertext, key)
         self.assertEqual(plaintext, decrypted_text)
 
+        # Test edge cases and invalid inputs
+        with self.assertRaises(ValueError):
+            self.encryption.encrypt(12345, key)  # Invalid plaintext type
+        with self.assertRaises(ValueError):
+            self.encryption.encrypt(plaintext, "invalid_key")  # Invalid key type
+        with self.assertRaises(ValueError):
+            self.decryption.decrypt(ciphertext, "invalid_key")  # Invalid key type
+        with self.assertRaises(ValueError):
+            self.decryption.decrypt("invalid_ciphertext", key)  # Invalid ciphertext type
+
     def test_aes_key_expansion(self):
         key = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0xcf, 0x9f, 0x24, 0x30, 0xc0, 0x8d]
         expanded_key = self.encryption.aes.key_expansion(key)
@@ -36,6 +46,16 @@ class TestCrypto(unittest.TestCase):
         ciphertext = self.encryption.aes.encrypt(plaintext, key)
         decrypted_text = self.decryption.aes.decrypt(ciphertext, key)
         self.assertEqual(plaintext, decrypted_text)
+
+        # Test edge cases and invalid inputs
+        with self.assertRaises(ValueError):
+            self.encryption.aes.encrypt("invalid_plaintext", key)  # Invalid plaintext type
+        with self.assertRaises(ValueError):
+            self.encryption.aes.encrypt(plaintext, "invalid_key")  # Invalid key type
+        with self.assertRaises(ValueError):
+            self.decryption.aes.decrypt(ciphertext, "invalid_key")  # Invalid key type
+        with self.assertRaises(ValueError):
+            self.decryption.aes.decrypt("invalid_ciphertext", key)  # Invalid ciphertext type
 
 if __name__ == "__main__":
     unittest.main()
