@@ -1,17 +1,16 @@
 import unittest
-from crypto.encryption import Encryption
-from crypto.decryption import Decryption
-from group_theory.galois_field import GaloisField
-from crypto.des import DES
-from crypto.rsa import RSA
-from crypto.des3_impl import TripleDESImpl
-from crypto.des_impl import DESImpl
-from crypto.aes import AES
-from crypto.blowfish import Blowfish
-from crypto.twofish import Twofish
-from crypto.ecc import ECC
-from crypto.dsa import DSA
-from crypto.sha256 import SHA256
+
+from .encryption import Encryption
+from .decryption import Decryption
+from ..group_theory.galois_field import GaloisField
+from .des import DES
+from .rsa import RSA
+from .3des import TripleDES
+from .blowfish import Blowfish
+from .twofish import Twofish
+from .ecc import ECC
+from .dsa import DSA
+from .sha256 import SHA256
 
 class TestCrypto(unittest.TestCase):
     def setUp(self):
